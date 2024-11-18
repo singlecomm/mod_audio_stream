@@ -231,14 +231,16 @@ public:
                     write_frame.datalen = rawAudio.size();
                     write_frame.samples = rawAudio.size() / 2;
 
-                    switch_log_printf(SWITCH_CHANNEL_SESSION_LOG(session), SWITCH_LOG_DEBUG, "(%s) processMessage - about to write %d samples, %d bytes\n",
-                                      m_sessionId.c_str(), write_frame.samples, write_frame.datalen);
+                    switch_log_printf(SWITCH_CHANNEL_SESSION_LOG(session), SWITCH_LOG_DEBUG, "(%s) processMessage - about to write %d samples @%d, %d bytes\n",
+                                      m_sessionId.c_str(), write_frame.samples, write_frame.rate, write_frame.datalen);
 
                     if (switch_core_session_write_frame(session, &write_frame, SWITCH_IO_FLAG_NONE, 0) != SWITCH_STATUS_SUCCESS) {
                         switch_log_printf(SWITCH_CHANNEL_SESSION_LOG(session), SWITCH_LOG_ERROR, "(%s) processMessage - failed to write frame\n", m_sessionId.c_str());
                     } else {
                         switch_log_printf(SWITCH_CHANNEL_SESSION_LOG(session), SWITCH_LOG_DEBUG, "(%s) processMessage - wrote frame\n", m_sessionId.c_str());
                     }
+
+                    switch_log_printf(SWITCH_CHANNEL_SESSION_LOG(session), SWITCH_LOG_DEBUG, "(%s) processMessage - ulaw base64: %s\n", m_sessionId.c_str(), jsonAudio->valuestring);
                 }
 
                 if(jsonFile) {
