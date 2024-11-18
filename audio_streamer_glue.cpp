@@ -215,10 +215,13 @@ public:
                     jsonFile = cJSON_CreateString(filePath);
                     cJSON_AddItemToObject(jsonData, "file", jsonFile);
 
-                    // TODO: maybe place behind a parameter
-                    switch_ivr_play_file(session, NULL, filePath, NULL);
-                    switch_log_printf(SWITCH_CHANNEL_SESSION_LOG(session), SWITCH_LOG_DEBUG, "(%s) processMessage - playing file: %s\n",
-                                      m_sessionId.c_str(), filePath);
+                    if (switch_ivr_displace_session(session, filePath, 0, NULL) != SWITCH_STATUS_SUCCESS) {
+                        switch_log_printf(SWITCH_CHANNEL_SESSION_LOG(session), SWITCH_LOG_ERROR, "(%s) processMessage - failed to displace session with file: %s\n",
+                                          m_sessionId.c_str(), filePath);
+                    } else {
+                        switch_log_printf(SWITCH_CHANNEL_SESSION_LOG(session), SWITCH_LOG_DEBUG, "(%s) processMessage - displaced session for with: %s\n",
+                                          m_sessionId.c_str(), filePath);
+                    }
                 }
 
                 if(jsonFile) {
