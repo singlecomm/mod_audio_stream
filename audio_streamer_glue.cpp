@@ -215,13 +215,15 @@ public:
                     jsonFile = cJSON_CreateString(filePath);
                     cJSON_AddItemToObject(jsonData, "file", jsonFile);
 
-                    if (switch_ivr_displace_session(session, filePath, 0, NULL) != SWITCH_STATUS_SUCCESS) {
-                        switch_log_printf(SWITCH_CHANNEL_SESSION_LOG(session), SWITCH_LOG_ERROR, "(%s) processMessage - failed to displace session with file: %s\n",
-                                          m_sessionId.c_str(), filePath);
-                    } else {
-                        switch_log_printf(SWITCH_CHANNEL_SESSION_LOG(session), SWITCH_LOG_DEBUG, "(%s) processMessage - displaced session for with: %s\n",
-                                          m_sessionId.c_str(), filePath);
-                    }
+                    // Create a new buffer for the raw audio data
+                    switch_frame_t frame = { 0 };
+                    frame.data = (void*)rawAudio.data();
+                    frame.datalen = rawAudio.size();
+                    frame.samples = rawAudio.size() / 2; // 16-bit audio
+                    frame.channels = 1;
+
+                    // Play the audio frame
+                    switch_core_session_write_frame(session, &frame, SWITCH_IO_FLAG_NONE, 0);
                 }
 
                 if(jsonFile) {
