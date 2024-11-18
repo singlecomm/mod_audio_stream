@@ -176,10 +176,10 @@ public:
                 cJSON* jsonAudio = cJSON_DetachItemFromObject(jsonData, "audioData");
                 const char* jsAudioDataType = cJSON_GetObjectCstr(jsonData, "audioDataType");
                 std::string fileType;
-                int sampleRate;
+                cJSON* jsonSampleRate = cJSON_GetObjectItem(jsonData, "sampleRate");
+                int sampleRate = jsonSampleRate && jsonSampleRate->valueint ? jsonSampleRate->valueint : 0;
+
                 if (0 == strcmp(jsAudioDataType, "raw")) {
-                    cJSON* jsonSampleRate = cJSON_GetObjectItem(jsonData, "sampleRate");
-                    sampleRate = jsonSampleRate && jsonSampleRate->valueint ? jsonSampleRate->valueint : 0;
                     std::unordered_map<int, const char*> sampleRateMap = {
                             {8000, ".r8"},
                             {16000, ".r16"},
