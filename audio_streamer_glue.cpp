@@ -196,6 +196,8 @@ public:
                     fileType = ".mp3";
                 } else if (0 == strcmp(jsAudioDataType, "ogg")) {
                     fileType = ".ogg";
+                } else if (0 == strcmp(jsAudioDataType, "ulaw")) {
+                    fileType = ".ulaw";
                 } else {
                     switch_log_printf(SWITCH_CHANNEL_SESSION_LOG(session), SWITCH_LOG_ERROR, "(%s) processMessage - unsupported audio type: %s\n",
                                       m_sessionId.c_str(), jsAudioDataType);
