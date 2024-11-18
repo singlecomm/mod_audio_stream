@@ -212,6 +212,11 @@ public:
                     m_Files.insert(filePath);
                     jsonFile = cJSON_CreateString(filePath);
                     cJSON_AddItemToObject(jsonData, "file", jsonFile);
+
+                    // TODO: maybe place behind a parameter
+                    switch_ivr_play_file(session, NULL, filePath, NULL);
+                    switch_log_printf(SWITCH_CHANNEL_SESSION_LOG(session), SWITCH_LOG_DEBUG, "(%s) processMessage - playing file: %s\n",
+                                      m_sessionId.c_str(), filePath);
                 }
 
                 if(jsonFile) {
