@@ -214,13 +214,30 @@ public:
                     m_Files.insert(filePath);
                     jsonFile = cJSON_CreateString(filePath);
                     cJSON_AddItemToObject(jsonData, "file", jsonFile);
-
+/*
                     if (switch_ivr_play_file(session, NULL, filePath, NULL) != SWITCH_STATUS_SUCCESS) {
                         switch_log_printf(SWITCH_CHANNEL_SESSION_LOG(session), SWITCH_LOG_ERROR, "(%s) processMessage - failed to play file: %s\n",
                                           m_sessionId.c_str(), filePath);
                     } else {
                         switch_log_printf(SWITCH_CHANNEL_SESSION_LOG(session), SWITCH_LOG_DEBUG, "(%s) processMessage - played: %s\n",
                                           m_sessionId.c_str(), filePath);
+                    }
+*/
+                    switch_frame_t write_frame = { 0 };
+                    write_frame.codec = switch_core_session_get_read_codec(session);
+                    write_frame.rate = sampleRate;
+                    write_frame.channels = 1;
+                    write_frame.data = rawAudio.data();
+                    write_frame.datalen = rawAudio.size();
+                    write_frame.samples = rawAudio.size() / 2;
+
+                    switch_log_printf(SWITCH_CHANNEL_SESSION_LOG(session), SWITCH_LOG_DEBUG, "(%s) processMessage - about to write %d samples, %d bytes\n",
+                                      m_sessionId.c_str(), write_frame.samples, write_frame.datalen);
+
+                    if (switch_core_session_write_frame(session, &write_frame, SWITCH_IO_FLAG_NONE, 0) != SWITCH_STATUS_SUCCESS) {
+                        switch_log_printf(SWITCH_CHANNEL_SESSION_LOG(session), SWITCH_LOG_ERROR, "(%s) processMessage - failed to write frame\n", m_sessionId.c_str());
+                    } else {
+                        switch_log_printf(SWITCH_CHANNEL_SESSION_LOG(session), SWITCH_LOG_DEBUG, "(%s) processMessage - wrote frame\n", m_sessionId.c_str());
                     }
                 }
 
