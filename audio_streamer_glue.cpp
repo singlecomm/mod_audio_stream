@@ -227,7 +227,7 @@ public:
                     write_frame.codec = switch_core_session_get_read_codec(session);
                     write_frame.rate = sampleRate;
                     write_frame.channels = 1;
-                    write_frame.data = rawAudio.data();
+                    write_frame.data = (void*)rawAudio.data();
                     write_frame.datalen = rawAudio.size();
                     write_frame.samples = rawAudio.size() / 2;
 
